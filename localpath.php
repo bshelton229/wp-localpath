@@ -31,13 +31,27 @@ function localpath_filter($content) {
     return $content;
   }
 
-  if(!in_array($_SERVER['HTTP_HOST'], $hosts)) {
-    foreach($hosts as $host) {
-      $content = preg_replace("/$host/", $_SERVER['HTTP_HOST'], $content);
-    }
+  if(!in_array(strtolower($_SERVER['HTTP_HOST']), $hosts) && !empty($hosts)) {
+    print 'Did get here';
+    $pattern = '~(href|src)="((http|https)://(' . preg_quote(implode('|', $hosts)) . ')([^"]*))"~x';
+    $content = preg_replace_callback($pattern, 'localpath_replace_callback', $content);
   }
 
   return $content;
+}
+
+/**
+ * Replace callback
+ */
+function localpath_replace_callback($matches) {
+  //echo "<pre>"; print_r($matches); echo "</pre>";
+  
+  $out = $matches[1] . '="';
+  $out .= preg_replace('~^(http|https)?://(' . $matches[4] . ')~', WP_SITEURL, $matches[2]);
+  $out .= '"';
+  
+  //print "Replace with $out";
+  return $out;
 }
 
 /**
@@ -93,6 +107,7 @@ function _localpath_hosts() {
   }
   else {
     $replace = preg_split('/\s/', preg_replace('/\s+/', ' ', $opts));
-    return array_map('trim', $replace);
+    $out = array_map('trim', $replace);
+    return array_map('strtolower', $out);
   }
 }
