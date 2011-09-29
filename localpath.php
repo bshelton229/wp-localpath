@@ -31,9 +31,8 @@ function localpath_filter($content) {
     return $content;
   }
 
-  if(!in_array(strtolower($_SERVER['HTTP_HOST']), $hosts) && !empty($hosts)) {
-    print 'Did get here';
-    $pattern = '~(href|src)="((http|https)://(' . preg_quote(implode('|', $hosts)) . ')([^"]*))"~x';
+  if(!empty($hosts)) {
+    $pattern = '~(href|src|HREF|SRC)="((http|https)://(' . preg_quote(implode('|', $hosts)) . ')([^"]*))"~x';
     $content = preg_replace_callback($pattern, 'localpath_replace_callback', $content);
   }
 
@@ -41,16 +40,22 @@ function localpath_filter($content) {
 }
 
 /**
- * Replace callback
+ * The replace callback for preg_replace_callback
+ *
+ * @NOTE: We need to determine if we should ditch HTTPS
+ *
+ * @param array $matches
+ *  Provided by preg_replace_callback, this is an array of matches
+ * @return string
+ *  Returns a string for the replacement
  */
 function localpath_replace_callback($matches) {
-  //echo "<pre>"; print_r($matches); echo "</pre>";
-  
+  //echo "<pre>"; print_r($matches); echo "</pre>"; // For debugging the regex
+
   $out = $matches[1] . '="';
   $out .= preg_replace('~^(http|https)?://(' . $matches[4] . ')~', WP_SITEURL, $matches[2]);
   $out .= '"';
-  
-  //print "Replace with $out";
+
   return $out;
 }
 
