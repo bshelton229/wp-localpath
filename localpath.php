@@ -75,6 +75,7 @@ function localpath_admin() {
     update_option( 'localpath_hosts', trim($_POST['hosts']) );
     $localpath_notice = "Settings Saved";
   }
+
   // Include the form
   include dirname(__FILE__) . '/admin/settings_form.php';
   return TRUE;
@@ -94,8 +95,14 @@ function _localpath_opts() {
   static $localpath_options;
   if(isset($localpath_options)) { return $localpath_options; }
 
-  // Gert the option from the DB
-  $localpath_options = trim(get_option('localpath_hosts', ''));
+  // Get the option from the DB or the
+  if (defined('LOCALPATH_HOSTS')) {
+    $localpath_options = trim(LOCALPATH_HOSTS);
+  }
+  else {
+    $localpath_options = trim(get_option('localpath_hosts', ''));
+  }
+
   return $localpath_options;
 }
 
