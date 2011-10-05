@@ -11,7 +11,9 @@ Version: 0.1
 */
 
 // Register our hooks
-add_filter('the_content', 'localpath_filter');
+if (_localpath_enabled()) {
+  add_filter('the_content', 'localpath_filter');
+}
 add_action('admin_menu',  'localpath_adminmenu');
 
 /**
@@ -122,4 +124,14 @@ function _localpath_hosts() {
     $out = array_map('trim', $replace);
     return array_map('strtolower', $out);
   }
+}
+
+/**
+ * Function to try to read the LOCALPATH_ENABLED constant
+ * to see if the plugin has been disabled in the wp-config.php file
+ *
+ * @return boolean
+ */
+function _localpath_enabled() {
+  return (defined('LOCALPATH_ENABLED') && !LOCALPATH_ENABLED) ? FALSE : TRUE;
 }
