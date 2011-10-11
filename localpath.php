@@ -55,7 +55,7 @@ function localpath_replace_callback($matches) {
   //echo "<pre>"; print_r($matches); echo "</pre>"; // For debugging the regex
 
   $out = $matches[1] . '="';
-  $out .= preg_replace('~^(http|https)?://(' . $matches[4] . ')~', WP_SITEURL, $matches[2]);
+  $out .= preg_replace('~^(http|https)?://(' . $matches[4] . ')~', get_site_url(), $matches[2]);
   $out .= '"';
 
   return $out;
