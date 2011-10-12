@@ -34,7 +34,7 @@ function localpath_filter($content) {
   }
 
   if(!empty($hosts)) {
-    $hosts = array_map('_localpath_preg_escape', $hosts);
+    $hosts = array_map('_localpath_preg_prepare', $hosts);
     $pattern = '~(href|src|HREF|SRC)="((http|https)://(' . implode('|', $hosts) . ')([^"]*))"~x';
     $content = preg_replace_callback($pattern, 'localpath_replace_callback', $content);
   }
@@ -53,12 +53,9 @@ function localpath_filter($content) {
  *  Returns a string for the replacement
  */
 function localpath_replace_callback($matches) {
-  //echo "<pre>"; print_r($matches); echo "</pre>"; // For debugging the regex
-
   $out = $matches[1] . '="';
   $out .= preg_replace('~^(http|https)?://(' . $matches[4] . ')~', get_site_url(), $matches[2]);
   $out .= '"';
-
   return $out;
 }
 
@@ -138,17 +135,16 @@ function _localpath_enabled() {
 }
 
 /**
- * Array map callback
- *
- * This is used in our array maps instead of calling
- * preg_quote directly in order to pass the ~
- * delimiter to the preg_quote function
+ * Clean up each host from _localpath_hosts
+ * before being used in the search regular expression
  *
  * @param string
- *  The string to escape
+ *  The string to prepare
+ *
  * @return string
  *  The preg_quote escaped string with ~ as the delimiter
  */
-function _localpath_preg_escape($s) {
+function _localpath_preg_prepare($s) {
+  $s = preg_replace('~/+$~', '', $s);
   return preg_quote($s, "~");
 }
