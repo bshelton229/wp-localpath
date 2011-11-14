@@ -1,13 +1,13 @@
 <?php
 /**
 * @package LocalPath
-* @version 0.1
+* @version 0.2
 */
 /*
 Plugin Name: LocalPath
 Description: Re-write URLs away from admin URLs to the current host.
-Author: University Communications at UW-Madison
-Version: 0.1
+Author: University Communications at the University of Wisconsin-Madison
+Version: 0.2
 */
 
 // Register our hooks
