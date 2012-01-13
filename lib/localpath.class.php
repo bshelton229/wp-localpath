@@ -83,9 +83,11 @@ class Localpath {
       $replace = preg_split('/\s/', preg_replace('/\s+/', ' ', $opts));
       $raw = array_map('trim', $replace);
       $out = array();
-      // Remove http:// prefixes and make sure we have a trailing slash
+      // Shap the raw option into an array of formatted hosts
       foreach ($raw as $k => $v) {
+        // Remove any protocol prefixes
         $v = preg_replace('~^([a-z]+)://~i', '', $v);
+        // Make sure we have a trailing slash
         if (!preg_match('~/$~', $v)) {
           $v .= '/';
         }
