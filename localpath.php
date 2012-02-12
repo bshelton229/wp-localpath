@@ -1,7 +1,7 @@
 <?php
 /**
 * @package LocalPath
-* @version 0.3
+* @version 0.4
 */
 /*
 Plugin Name: LocalPath
